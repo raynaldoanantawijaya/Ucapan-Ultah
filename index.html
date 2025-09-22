@@ -1,72 +1,234 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HBD Shafrina Sekar Puspita</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-    />
-  </head>
-  <body
-<body
-  style="
-    background-image: url('https://i.imgur.com/rCZQ4U1.jpeg');
-    background-size: cover;        /* supaya foto nutup full layar */
-    background-position: center;   /* supaya posisi foto di tengah */
-    background-repeat: no-repeat;  /* biar gak ngulang */
-  "
-  class="flex justify-center h-screen items-center"
->
-  >
-    <div
-      class="bg-white border px-10 py-8 border-4 border-gray-300 shadow-lg shadow-blue-300 rounded-xl text-center animate__animated animate__backInDown m-8 w-80"
-      id="kartu"
-    >
-      <h1 class="text-3xl">Happy Birthday</h1>
-      <h1
-        class="text-4xl text-blue-500 font-bold animate__animated animate__pulse animate__infinite"
-      >
-        Shafrina Sekar Puspita
-      </h1>
-      <button
-        class="p-2 bg-blue-600 text-white rounded mt-5 hover:bg-blue-900 transition ease-in w-full animate__animated animate__delay-1s animate__tada"
-        onclick="ubahKartu()"
-      >
-        Klik Disini Sayangku!
-      </button>
-    </div>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Website Ulang Tahun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
-    <script>
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.10.0/firebase-storage.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy1IMv6ugNGA578sx0n87IlxLGzCcCkes",
+      authDomain: "project-ae3dc.firebaseapp.com",
+      projectId: "project-ae3dc",
+      storageBucket: "project-ae3dc.appspot.com",
+      messagingSenderId: "568389785825",
+      appId: "1:568389785825:web:0260a79e523ea68299ffa0",
+      measurementId: "G-VXYN6DC9YY"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storage = firebase.storage();
+  </script>
+</head>
+<body class="bg-cover bg-center min-h-screen text-white"
+  style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+
+  <!-- Halaman Menu Utama -->
+  <div id="menuPage" class="min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70">
+    <h2 class="text-3xl font-bold mb-6">Menu Utama</h2>
+    <div class="grid grid-cols-2 gap-6">
+      <button onclick="openPage('ucapanPage')" class="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg shadow-lg">Ucapan</button>
+      <button onclick="openPage('kenanganPage')" class="bg-purple-500 hover:bg-purple-600 px-6 py-3 rounded-lg shadow-lg">Kenangan</button>
+      <button onclick="openPage('visiPage')" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg shadow-lg">Visi</button>
+      <button onclick="openPage('harapanPage')" class="bg-pink-500 hover:bg-pink-600 px-6 py-3 rounded-lg shadow-lg">Harapan</button>
+    </div>
+  </div>
+
+  <!-- Halaman Ucapan -->
+  <div id="ucapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+    <h2 class="text-4xl font-bold mb-6">🎉 Selamat Ulang Tahun 🎉</h2>
+    <p class="text-lg max-w-md">Semoga panjang umur, sehat selalu, penuh cinta, dan kebahagiaan yang abadi.</p>
+    <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
+  </div>
+
+  <!-- Halaman Kenangan -->
+  <div id="kenanganPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
+    <div class="flex justify-between items-center p-4">
+      <h2 class="text-2xl font-bold">Kenangan</h2>
+      <button onclick="addSubmenu()" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded">+ Tambah Submenu</button>
+    </div>
+    <div id="submenuList" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4"></div>
+    <button onclick="backToMenu()" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
+  </div>
+
+  <!-- Halaman Detail Kenangan -->
+  <div id="kenanganDetailPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
+    <div class="flex justify-between items-center p-4">
+      <h2 id="kenanganTitle" class="text-2xl font-bold"></h2>
+      <input type="file" id="photoInput" style="display:none" onchange="uploadPhoto(event)">
+      <button onclick="document.getElementById('photoInput').click()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">+ Tambah Foto</button>
+    </div>
+    <div id="photoList" class="grid grid-cols-2 gap-4 p-4 flex-1 overflow-y-auto"></div>
+    <div id="pagination" class="flex justify-center space-x-2 p-4"></div>
+    <button onclick="openPage('kenanganPage')" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
+  </div>
+
+  <!-- Halaman Visi -->
+  <div id="visiPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+    <h2 class="text-3xl font-bold mb-6">✨ Visi Kita ✨</h2>
+    <p class="text-lg max-w-md">Membangun masa depan bersama penuh cinta, kebahagiaan, dan kesuksesan.</p>
+    <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
+  </div>
+
+  <!-- Halaman Harapan -->
+  <div id="harapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+    <h2 class="text-3xl font-bold mb-6">💖 Harapan 💖</h2>
+    <div id="harapanList" class="flex flex-col gap-2 mb-4"></div>
+    <input type="text" id="newHarapan" placeholder="Tulis harapan..." class="px-3 py-2 rounded text-black w-64">
+    <button onclick="addHarapan()" class="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded mb-6">Tambah</button>
+    <button onclick="backToMenu()" class="bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
+  </div>
+
+  <script>
+    let currentKenangan = "";
+    let currentPage = 1;
+
+    function openPage(page) {
+      document.querySelectorAll("body > div").forEach(div => div.classList.add("hidden"));
+      document.getElementById(page).classList.remove("hidden");
+      if(page === "kenanganPage") loadSubmenus();
+      if(page === "harapanPage") loadHarapan();
+    }
+
+    function backToMenu() {
+      openPage('menuPage');
+    }
+
+    // -------------------- Kenangan --------------------
+    function loadSubmenus() {
+      const container = document.getElementById("submenuList");
+      container.innerHTML = "";
+      db.ref('kenangan').once('value', snapshot => {
+        const data = snapshot.val() || {};
+        Object.keys(data).forEach(name => {
+          const btn = document.createElement("button");
+          btn.className = "bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg shadow-lg";
+          btn.textContent = name;
+          btn.onclick = () => openKenanganDetail(name);
+          container.appendChild(btn);
+        });
       });
-      let kartu = document.getElementById("kartu");
-      function ubahKartu() {
-        kartu.innerHTML = `    <h1 class="font-semibold text-wrap animate__animated animate__zoomIn">
-      Selamat ulang tahun, sayangku. 
-      Semoga kamu selalu merasa dicintai, dihargai, dan dimengerti. Ikhlaskan seluruh kekecewaan dan kesedihan mu di masa lalu, karena aku akan selalu bersama mu. 
-Semoga kamu dilapangkan rezekinya, dijaga dari segala marabahaya, dan selalu dikelilingi teman teman yang peduli padamu.  Love Youu. 🎉🎂💕
-    </h1>
-    <h2 class="mt-3 animate__animated animate__fadeIn">
-      - Dari : Raynaldo Ananta Wijaya -
-    </h2>
-    <button
-      class="p-2 bg-slate-600 text-white rounded mt-5 hover:bg-slate-900 transition ease-in w-full animate__animated animate__delay-1s animate__tada"
-      onclick="refresh()"
-    >
-      Tutup
-    </button>
-    `;
+    }
+
+    function addSubmenu() {
+      const name = prompt("Nama submenu kenangan:");
+      if(name) {
+        db.ref('kenangan/' + name).set([]).then(loadSubmenus);
       }
-      function refresh() {
-        location.reload();
-      }
-    </script>
-  </body>
+    }
+
+    function openKenanganDetail(name) {
+      currentKenangan = name;
+      currentPage = 1;
+      openPage('kenanganDetailPage');
+      document.getElementById("kenanganTitle").textContent = name;
+      loadPhotos();
+    }
+
+    function loadPhotos() {
+      const list = document.getElementById("photoList");
+      const pagination = document.getElementById("pagination");
+      list.innerHTML = "";
+      pagination.innerHTML = "";
+
+      db.ref('kenangan/' + currentKenangan).once('value', snap => {
+        const photos = snap.val() || [];
+        const perPage = 4;
+        const totalPages = Math.ceil(photos.length / perPage);
+        const start = (currentPage -1) * perPage;
+        const end = start + perPage;
+        const currentPhotos = photos.slice(start,end);
+
+        currentPhotos.forEach((url, idx) => {
+          const div = document.createElement('div');
+          div.className = "relative";
+          const img = document.createElement("img");
+          img.src = url;
+          img.className = "rounded-lg shadow-lg";
+          const del = document.createElement("button");
+          del.textContent = "❌";
+          del.className = "absolute top-1 right-1 bg-red-500 text-white px-1 rounded";
+          del.onclick = () => deletePhoto(idx);
+          div.appendChild(img);
+          div.appendChild(del);
+          list.appendChild(div);
+        });
+
+        for(let i=1;i<=totalPages;i++){
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.className = `px-3 py-1 rounded ${i===currentPage?'bg-blue-500':'bg-gray-600 hover:bg-gray-700'}`;
+          btn.onclick = ()=> { currentPage=i; loadPhotos(); };
+          pagination.appendChild(btn);
+        }
+      });
+    }
+
+    function uploadPhoto(event){
+      const file = event.target.files[0];
+      if(!file) return;
+      const path = currentKenangan+'/'+Date.now()+'_'+file.name;
+      const uploadTask = storage.ref(path).put(file);
+      uploadTask.on('state_changed',null,err=>console.error(err),()=>{
+        uploadTask.snapshot.ref.getDownloadURL().then(url=>{
+          db.ref('kenangan/'+currentKenangan).once('value').then(snap=>{
+            const arr = snap.val() || [];
+            arr.push(url);
+            db.ref('kenangan/'+currentKenangan).set(arr).then(loadPhotos);
+          });
+        });
+      });
+    }
+
+    function deletePhoto(index){
+      db.ref('kenangan/'+currentKenangan).once('value').then(snap=>{
+        const arr = snap.val() || [];
+        arr.splice(index,1);
+        db.ref('kenangan/'+currentKenangan).set(arr).then(loadPhotos);
+      });
+    }
+
+    // -------------------- Harapan --------------------
+    function loadHarapan(){
+      const list = document.getElementById("harapanList");
+      list.innerHTML = "";
+      db.ref('harapan').once('value').then(snap=>{
+        const data = snap.val() || [];
+        data.forEach((text, idx)=>{
+          const div = document.createElement("div");
+          div.className = "flex justify-between items-center bg-pink-700 px-3 py-2 rounded";
+          div.textContent = text;
+          const del = document.createElement("button");
+          del.textContent = "❌";
+          del.className = "ml-2 bg-red-500 px-2 rounded";
+          del.onclick = ()=>{
+            data.splice(idx,1);
+            db.ref('harapan').set(data).then(loadHarapan);
+          };
+          div.appendChild(del);
+          list.appendChild(div);
+        });
+      });
+    }
+
+    function addHarapan(){
+      const text = document.getElementById("newHarapan").value.trim();
+      if(!text) return;
+      db.ref('harapan').once('value').then(snap=>{
+        const data = snap.val() || [];
+        data.push(text);
+        db.ref('harapan').set(data).then(()=>{
+          document.getElementById("newHarapan").value = "";
+          loadHarapan();
+        });
+      });
+    }
+
+  </script>
+</body>
 </html>
