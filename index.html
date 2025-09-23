@@ -1,267 +1,395 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Website Ulang Tahun</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<meta charset="UTF-8">
+<title>Website Ulang Tahun</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<style>
+.thumbnail-img { width: 150px; height: 150px; object-fit: cover; border-radius: 0.5rem; }
+#lightboxImg { max-width: 90vw; max-height: 80vh; }
+#photoListWrapper {
+  display: flex;
+  justify-content: center; /* center horizontal */
+  align-items: center;     /* center vertical */
+  height: 100%;            /* wrapper penuh tinggi container */
+  padding: 1.5rem;         /* jarak dari tepi */
+}
+
+#photoList {
+  display: grid;
+  grid-template-columns: repeat(2, 150px);
+  grid-auto-rows: 150px;
+  gap: 3rem;             /* jarak antar foto */
+}
+
+.thumbnail-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+</style>
 </head>
-<body class="bg-cover bg-center min-h-screen text-white"
-  style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+<body class="bg-cover bg-center min-h-screen text-white" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
 
-  <!-- Halaman Login -->
-  <div id="loginPage" class="flex items-center justify-center min-h-screen">
-    <div class="bg-black bg-opacity-70 p-8 rounded-xl shadow-lg w-96">
-      <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
-      <input id="username" type="text" placeholder="Username" class="w-full mb-3 px-3 py-2 rounded text-black">
-      <input id="password" type="password" placeholder="Password" class="w-full mb-3 px-3 py-2 rounded text-black">
-      <button onclick="login()" class="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded">Login</button>
-      <p id="loginError" class="text-red-400 mt-2 text-center hidden">Login gagal!</p>
+<!-- Login -->
+<div id="loginPage" class="flex items-center justify-center min-h-screen">
+  <div class="bg-black bg-opacity-70 p-8 rounded-xl shadow-lg w-96">
+    <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
+    <input id="username" type="text" placeholder="Username" class="w-full mb-3 px-3 py-2 rounded text-black">
+    <input id="password" type="password" placeholder="Password" class="w-full mb-3 px-3 py-2 rounded text-black">
+    <button onclick="login()" class="w-full bg-blue-500 hover:bg-blue-600 py-2 rounded">Login</button>
+    <p id="loginError" class="text-red-400 mt-2 text-center hidden">Login gagal!</p>
+  </div>
+</div>
+
+  <!-- Anniversary -->
+<div id="annivPage" class="hidden flex flex-col items-center justify-center min-h-screen bg-black bg-opacity-70 text-white">
+  <h2 class="text-2xl font-bold mb-4">Masukkan Tanggal Anniversary</h2>
+  <input id="annivInput" type="date" class="px-4 py-2 rounded text-black mb-3">
+  <button onclick="checkAnniv()" class="bg-green-500 hover:bg-green-600 px-6 py-2 rounded">Submit</button>
+  <p id="annivError" class="text-red-400 mt-2 hidden">Tanggal salah! Coba lagi.</p>
+</div>
+  
+<!-- Menu -->
+<div id="menuPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70">
+  <h2 class="text-3xl font-bold mb-6">Menu Utama</h2>
+  <div class="grid grid-cols-2 gap-6">
+    <button onclick="openPage('ucapanPage')" class="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg shadow-lg">Ucapan</button>
+    <button onclick="openPage('kenanganPage')" class="bg-purple-500 hover:bg-purple-600 px-6 py-3 rounded-lg shadow-lg">Kenangan</button>
+    <button onclick="openPage('visiPage')" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg shadow-lg">Visi</button>
+    <button onclick="openPage('harapanPage')" class="bg-pink-500 hover:bg-pink-600 px-6 py-3 rounded-lg shadow-lg">Harapan</button>
+  </div>
+</div>
+
+<!-- Ucapan -->
+<div id="ucapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+  <h2 class="text-2xl font-bold mb-6">🎉Selamat Ulang Tahun🎉</h2>
+  <p class="text-lg max-w-md">Selamat ulang tahun, sayangku. Semoga kamu selalu merasa dicintai, dihargai, dan dimengerti. Ikhlaskan seluruh kekecewaan dan kesedihan mu di masa lalu, karena aku akan selalu bersama mu. Semoga kamu dilapangkan rezekinya, dijaga dari segala marabahaya, dan selalu dikelilingi teman teman yang peduli padamu.</p>
+  <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
+</div>
+
+<!-- Kenangan -->
+<div id="kenanganPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
+  <div class="flex justify-between items-center p-4">
+    <h2 class="text-2xl font-bold">Kenangan</h2>
+    <button onclick="addSubmenu()" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded">+ Tambah Grup</button>
+  </div>
+  <div id="submenuList" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4"></div>
+  <button onclick="backToMenu()" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
+</div>
+
+<!-- Detail Kenangan -->
+<div id="kenanganDetailPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
+  <div class="flex justify-between items-center p-4">
+    <h2 id="kenanganTitle" class="text-2xl font-bold"></h2>
+    <div>
+      <button onclick="addPhoto()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">+ Tambah Foto</button>
+      <button onclick="deleteGrup()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded ml-2">Hapus Grup</button>
     </div>
   </div>
+  <div id="photoListWrapper" class="flex-1 flex justify-center items-center overflow-y-auto">
+  <div id="photoList" class="grid grid-cols-2 gap-6"></div>
+</div>
+  <div id="pagination" class="flex justify-center gap-2 p-4"></div>
+  <button onclick="backFromDetailToKenangan()" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
+</div>
 
-  <!-- Menu Utama -->
-  <div id="menuPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70">
-    <h2 class="text-3xl font-bold mb-6">Menu Utama</h2>
-    <div class="grid grid-cols-2 gap-6">
-      <button onclick="openPage('ucapanPage')" class="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg shadow-lg">Ucapan</button>
-      <button onclick="openPage('kenanganPage')" class="bg-purple-500 hover:bg-purple-600 px-6 py-3 rounded-lg shadow-lg">Kenangan</button>
-      <button onclick="openPage('visiPage')" class="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg shadow-lg">Visi</button>
-      <button onclick="openPage('harapanPage')" class="bg-pink-500 hover:bg-pink-600 px-6 py-3 rounded-lg shadow-lg">Harapan</button>
-    </div>
+<!-- Visi -->
+<div id="visiPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+  <h2 class="text-3xl font-bold mb-6">✨ Visi Kita ✨</h2>
+  <p class="text-lg max-w-md">Aku ingin membangun hubungan yang tulus dan penuh percaya, di mana kita saling mendukung, menghargai, dan menghadirkan kehangatan satu sama lain. Hubungan ini bukan sekadar indah, tapi juga kuat dan berarti, membawa rasa nyaman dan bahagia bagi kita berdua.</p>
+  <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
+</div>
+
+<!-- Harapan -->
+<div id="harapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
+  <h2 class="text-3xl font-bold mb-6">💖 Harapan 💖</h2>
+  
+  <!-- List Harapan -->
+  <div id="harapanList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4"></div>
+  <div id="harapanPagination" class="flex justify-center gap-2 mt-2"></div>
+  <!-- Input Harapan -->
+  <div class="flex gap-2 mb-4 w-full max-w-md">
+    <input id="harapanInput" type="text" placeholder="Tambahkan harapan" 
+      class="flex-1 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-pink-500">
+    <button onclick="addHarapan()" 
+      class="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded-lg text-white font-bold">Tambah</button>
   </div>
 
-  <!-- Halaman Ucapan -->
-  <div id="ucapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
-    <h2 class="text-4xl font-bold mb-6">🎉 Selamat Ulang Tahun 🎉</h2>
-    <p class="text-lg max-w-md">Selamat ulang tahun, sayangku. Semoga kamu selalu merasa dicintai, dihargai, dan dimengerti. Ikhlaskan seluruh kekecewaan dan kesedihan mu di masa lalu, karena aku akan selalu bersama mu. Semoga kamu dilapangkan rezekinya, dijaga dari segala marabahaya, dan selalu dikelilingi teman teman yang peduli padamu.</p>
-    <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
-  </div>
+  <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
+</div>
 
-  <!-- Halaman Kenangan -->
-  <div id="kenanganPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
-    <div class="flex justify-between items-center p-4">
-      <h2 class="text-2xl font-bold">Kenangan</h2>
-      <button onclick="addSubmenu()" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded">+ Tambah Grup</button>
-    </div>
-    <div id="submenuList" class="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4"></div>
-    <button onclick="openPage('menuPage')" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
+<!-- Lightbox -->
+<div id="lightbox" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50" onclick="closeLightbox(event)">
+  <div class="relative">
+    <img id="lightboxImg" class="rounded-lg shadow-lg">
+    <a id="downloadBtn" href="#" download class="absolute bottom-2 right-2 bg-blue-500 px-3 py-1 rounded text-white">Download</a>
+    <button onclick="closeLightbox(event)" class="absolute top-2 right-2 bg-red-500 px-3 py-1 rounded text-white">X</button>
   </div>
-
-  <!-- Halaman Detail Kenangan -->
-  <div id="kenanganDetailPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
-    <div class="flex justify-between items-center p-4">
-      <h2 id="kenanganTitle" class="text-2xl font-bold"></h2>
-      <div>
-        <button onclick="addPhoto()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">+ Tambah Foto</button>
-        <button onclick="deleteGrup()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded ml-2">Hapus Grup</button>
-      </div>
-    </div>
-    <div id="photoList" class="grid grid-cols-2 gap-4 p-4 flex-1 overflow-y-auto"></div>
-    <div id="pagination" class="flex justify-center gap-2 p-4"></div>
-    <button onclick="openPage('kenanganPage')" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
-  </div>
-
-  <!-- Halaman Visi -->
-  <div id="visiPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
-    <h2 class="text-3xl font-bold mb-6">✨ Visi Kita ✨</h2>
-    <p class="text-lg max-w-md">Aku ingin membangun hubungan yang tulus dan penuh percaya, di mana kita saling mendukung, menghargai, dan menghadirkan kehangatan satu sama lain. Hubungan ini bukan sekadar indah, tapi juga kuat dan berarti, membawa rasa nyaman dan bahagia bagi kita berdua.</p>
-    <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
-  </div>
-
-  <!-- Halaman Harapan -->
-  <div id="harapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
-    <h2 class="text-3xl font-bold mb-6">💖 Harapan 💖</h2>
-    <div id="harapanList" class="flex flex-col gap-2 mb-4"></div>
-    <input id="harapanInput" type="text" placeholder="Tambahkan harapan" class="w-72 mb-3 px-3 py-2 rounded text-black">
-    <button onclick="addHarapan()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Tambah Harapan</button>
-    <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
-  </div>
-
-  <!-- Lightbox -->
-  <div id="lightbox" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50" onclick="closeLightbox(event)">
-    <div class="relative">
-      <img id="lightboxImg" class="max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg">
-      <a id="downloadBtn" href="#" download class="absolute bottom-2 right-2 bg-blue-500 px-3 py-1 rounded text-white">Download</a>
-      <button onclick="closeLightbox(event)" class="absolute top-2 right-2 bg-red-500 px-3 py-1 rounded text-white">X</button>
-    </div>
-  </div>
+</div>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAy1IMv6ugNGA578sx0n87IlxLGzCcCkes",
-    authDomain: "project-ae3dc.firebaseapp.com",
-    projectId: "project-ae3dc",
-    storageBucket: "project-ae3dc.firebasestorage.app",
-    messagingSenderId: "568389785825",
-    appId: "1:568389785825:web:0260a79e523ea68299ffa0",
-    measurementId: "G-VXYN6DC9YY"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+const firebaseConfig = {
+  apiKey: "AIzaSyAy1IMv6ugNGA578sx0n87IlxLGzCcCkes",
+  authDomain: "project-ae3dc.firebaseapp.com",
+  projectId: "project-ae3dc",
+  storageBucket: "project-ae3dc.firebasestorage.app",
+  messagingSenderId: "568389785825",
+  appId: "1:568389785825:web:0260a79e523ea68299ffa0",
+  measurementId: "G-VXYN6DC9YY"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  let currentKenangan = "";
-  let currentPage = 1;
-  const perPage = 4;
-  let currentPhotos = [];
+let currentKenangan = "";
+let currentPage = 1;
+const perPage = 4;
+let currentPhotos = [];
+let harapanPerPage = 10;
+let currentHarapanPage = 1;
+let allHarapan = []; // menampung semua harapan dari Firestore
 
-  function login() {
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-    if(user==="tes" && pass==="tes"){
-      document.getElementById("loginPage").classList.add("hidden");
-      document.getElementById("menuPage").classList.remove("hidden");
-      renderSubmenu();
-      renderHarapan();
-      history.replaceState({page:'menuPage'}, '', '#menuPage');
-    } else {
-      document.getElementById("loginError").classList.remove("hidden");
-    }
+// ===== Login =====
+function login() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  if(user==="raynaldo" && pass==="shafrina"){
+    // Tampilkan halaman anniversary
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("annivPage").classList.remove("hidden");
+  } else { 
+    document.getElementById("loginError").classList.remove("hidden"); 
   }
+}
 
-  function openPage(page){
-    document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
-    document.getElementById(page).classList.remove("hidden");
-    if(page==="kenanganPage") renderSubmenu();
-    if(page==="harapanPage") renderHarapan();
+  function checkAnniv(){
+  const input = document.getElementById("annivInput").value;
+  const target = "2025-08-23"; // format YYYY-MM-DD
+  if(input === target){
+    // Simpan login dan tanggal untuk persistensi
+    const today = new Date().toISOString().split('T')[0];
+    localStorage.setItem('loginUser', 'raynaldo');
+    localStorage.setItem('loginDate', today);
+    
+    // Masuk menu utama
+    document.getElementById("annivPage").classList.add("hidden");
+    document.getElementById("menuPage").classList.remove("hidden");
+    renderHarapan();
+    history.replaceState({page:'menuPage'}, '', '#menuPage');
+  } else {
+    document.getElementById("annivError").classList.remove("hidden");
+  }
+}
+  
+// ===== Navigasi =====
+// Saat login sukses
+history.replaceState({page:'menuPage'}, '', '#menuPage');
+
+// Navigasi dari menu ke halaman lain
+function openPage(page){
+  document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
+  document.getElementById(page).classList.remove("hidden");
+  if(page==="kenanganPage") renderSubmenu();
+  if(page==="harapanPage") renderHarapan();
+
+  // Hanya push state saat pindah dari menu
+  if(history.state?.page === 'menuPage'){
     history.pushState({page:page}, '', '#'+page);
+  }else{
+    history.replaceState({page:page}, '', '#'+page);
   }
+}
 
-  function backToMenu(){
-    openPage('menuPage');
-  }
+// Kembali dari detail ke list kenangan
+function backFromDetailToKenangan(){
+  document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
+  document.getElementById('kenanganPage').classList.remove("hidden");
 
-  window.addEventListener('popstate', e=>{
-    if(e.state && e.state.page){
-      document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
-      document.getElementById(e.state.page).classList.remove("hidden");
-    } else {
-      document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
-      document.getElementById('menuPage').classList.remove("hidden");
-      history.replaceState({page:'menuPage'}, '', '#menuPage');
+  // Ganti state, jangan push
+  history.replaceState({page:'kenanganPage'}, '', '#kenanganPage');
+}
+
+// Kembali ke menu
+function backToMenu(){
+  document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
+  document.getElementById('menuPage').classList.remove("hidden");
+
+  // Ganti state
+  history.replaceState({page:'menuPage'}, '', '#menuPage');
+}
+  
+window.addEventListener('popstate', e=>{
+  const page = e.state?.page || 'menuPage';
+  document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
+  document.getElementById(page).classList.remove("hidden");
+});
+
+// ===== Kenangan =====
+async function renderSubmenu(){
+  const container=document.getElementById("submenuList");
+  container.innerHTML="";
+  const snapshot=await db.collection("kenangan").get();
+  snapshot.forEach(doc=>{
+    const name=doc.id;
+    const btn=document.createElement("button");
+    btn.className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg shadow-lg";
+    btn.textContent=name;
+    btn.onclick=()=>openKenanganDetail(name);
+    container.appendChild(btn);
+  });
+}
+
+async function openKenanganDetail(name){
+  currentKenangan = name;
+  currentPage = 1;
+  currentPhotos = [];
+
+  document.getElementById("photoList").replaceChildren();
+  document.getElementById("pagination").replaceChildren();
+
+  document.querySelectorAll("body > div").forEach(d => d.classList.add("hidden"));
+  document.getElementById("kenanganDetailPage").classList.remove("hidden");
+  document.getElementById("kenanganTitle").textContent = name;
+
+  const doc = await db.collection("kenangan").doc(currentKenangan).get();
+  currentPhotos = doc.exists ? (doc.data().photos || []) : [];
+  renderPhotos();
+
+  // Gunakan pushState, bukan replaceState
+  history.pushState({page:'kenanganDetailPage'}, '', '#kenanganDetailPage');
+}
+
+// ===== Render Photos =====
+function getThumbnail(url){ return url; } // Bisa ditambahkan thumbnail sesuai host
+function renderPhotos(){
+  const list=document.getElementById("photoList"); const pagination=document.getElementById("pagination");
+  list.innerHTML=""; pagination.innerHTML="";
+  const totalPages=Math.ceil(currentPhotos.length/perPage);
+  const start=(currentPage-1)*perPage; const end=start+perPage; const pagePhotos=currentPhotos.slice(start,end);
+  pagePhotos.forEach((url,index)=>{
+    const div=document.createElement("div"); div.className="relative";
+    const img=document.createElement("img"); img.src=getThumbnail(url); img.dataset.full=url; img.loading="lazy"; img.className="thumbnail-img cursor-pointer";
+    img.onclick=()=>openLightbox(img.dataset.full);
+    const delBtn=document.createElement("button"); delBtn.textContent="Hapus"; delBtn.className="absolute top-1 right-1 bg-red-500 text-white px-1 py-0.5 rounded text-sm";
+    delBtn.onclick = async (e) => {
+  e.stopPropagation();
+  if(confirm("Hapus foto ini?")) {
+    const globalIndex = (currentPage-1) * perPage + index;
+    currentPhotos.splice(globalIndex, 1);
+    await db.collection("kenangan").doc(currentKenangan).update({photos: currentPhotos});
+
+    if(currentPhotos.length === 0){
+      // kalau sudah habis, kembali ke halaman daftar grup
+      currentKenangan = "";
+      currentPage = 1;
+      currentPhotos = [];
+      backFromDetailToKenangan(); 
+      return; // hentikan renderPhotos agar tidak menampilkan halaman kosong
     }
+
+    // jika masih ada foto, cek currentPage
+    const totalPages = Math.ceil(currentPhotos.length / perPage);
+    if(currentPage > totalPages) currentPage = totalPages;
+    renderPhotos();
+  }
+};
+      div.appendChild(img); div.appendChild(delBtn); list.appendChild(div);
+  });
+  for(let i=1;i<=totalPages;i++){
+    const btn=document.createElement("button"); btn.textContent=i; btn.className=`px-3 py-1 rounded ${i===currentPage?'bg-blue-500':'bg-gray-600 hover:bg-gray-700'}`; btn.onclick=()=>{currentPage=i; renderPhotos();}; pagination.appendChild(btn);
+  }
+}
+
+// ===== Lightbox =====
+function openLightbox(url){ const lb=document.getElementById("lightbox"); const img=document.getElementById("lightboxImg"); const dl=document.getElementById("downloadBtn"); img.src=url; dl.href=url; lb.classList.remove("hidden"); }
+function closeLightbox(e){ if(!e || e.target.id==='lightbox' || e.target.tagName==='BUTTON') document.getElementById("lightbox").classList.add("hidden"); }
+
+// ===== Tambah / Hapus Grup & Foto =====
+async function addSubmenu(){
+  const name=prompt("Nama grup kenangan:"); if(!name)return;
+  const doc=await db.collection("kenangan").doc(name).get();
+  if(doc.exists){ alert("Nama grup sudah ada! Gunakan nama lain."); return; }
+  await db.collection("kenangan").doc(name).set({photos:[]}); renderSubmenu();
+}
+async function addPhoto(){ const url=prompt("Masukkan URL foto:"); if(!url)return; const doc=await db.collection("kenangan").doc(currentKenangan).get(); const photos=doc.exists?(doc.data().photos||[]):[]; photos.push(url); await db.collection("kenangan").doc(currentKenangan).update({photos}); currentPhotos=photos; renderPhotos(); }
+async function deleteGrup(){ if(!confirm("Hapus grup ini?")) return; await db.collection("kenangan").doc(currentKenangan).delete(); backToMenu(); }
+
+// ===== Harapan =====
+async function renderHarapan(page=1) {
+  const list = document.getElementById("harapanList");
+  list.innerHTML = "";
+  const pagination = document.getElementById("harapanPagination");
+
+  // Fetch semua harapan
+  const snapshot = await db.collection("harapan").get();
+  allHarapan = snapshot.docs.map(doc => ({id: doc.id, text: doc.data().text}));
+
+  const totalPages = Math.ceil(allHarapan.length / harapanPerPage);
+  
+  // Jika halaman sekarang > totalPages, pindah ke halaman terakhir
+  if(totalPages > 0 && page > totalPages) page = totalPages;
+  currentHarapanPage = page;
+
+  const start = (page - 1) * harapanPerPage;
+  const end = start + harapanPerPage;
+  const pageHarapan = allHarapan.slice(start, end);
+
+  // Render harapan
+  pageHarapan.forEach(h => {
+    const div = document.createElement("div");
+    div.className = "flex justify-between items-center bg-pink-600 bg-opacity-70 hover:bg-pink-700 transition p-3 rounded-lg shadow-md";
+
+    const textSpan = document.createElement("span");
+    textSpan.textContent = h.text;
+    textSpan.className = "text-white font-medium";
+
+    const del = document.createElement("button");
+    del.textContent = "X";
+    del.className = "bg-red-500 hover:bg-red-600 px-2 py-1 rounded ml-2 text-white";
+    del.onclick = async () => {
+      if(confirm("Yakin ingin menghapus harapan ini?")){
+        await db.collection("harapan").doc(h.id).delete();
+
+        // refresh semua data
+        const remaining = allHarapan.length - 1; // karena satu akan dihapus
+        const newTotalPages = Math.ceil(remaining / harapanPerPage);
+
+        // jika halaman sekarang kosong, pindah ke halaman sebelumnya jika ada
+        if(remaining > 0 && (currentHarapanPage > newTotalPages)) {
+          currentHarapanPage = newTotalPages;
+        }
+
+        renderHarapan(currentHarapanPage);
+      }
+    };
+
+    div.appendChild(textSpan);
+    div.appendChild(del);
+    list.appendChild(div);
   });
 
-  async function renderSubmenu(){
-    const container=document.getElementById("submenuList");
-    container.innerHTML="";
-    const snapshot=await db.collection("kenangan").get();
-    snapshot.forEach(doc=>{
-      const name=doc.id;
-      const btn=document.createElement("button");
-      btn.className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg shadow-lg";
-      btn.textContent=name;
-      btn.onclick=()=>openKenanganDetail(name);
-      container.appendChild(btn);
-    });
+  // Render pagination
+  pagination.innerHTML = "";
+  for(let i = 1; i <= totalPages; i++){
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = `px-3 py-1 rounded ${i===currentHarapanPage ? 'bg-blue-500' : 'bg-gray-600 hover:bg-gray-700'}`;
+    btn.onclick = () => { currentHarapanPage = i; renderHarapan(i); };
+    pagination.appendChild(btn);
   }
-
-  async function openKenanganDetail(name){
-    currentKenangan=name;
-    currentPage=1;
-    document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
-    document.getElementById("kenanganDetailPage").classList.remove("hidden");
-    document.getElementById("kenanganTitle").textContent=name;
-    const doc=await db.collection("kenangan").doc(currentKenangan).get();
-    currentPhotos=doc.exists?(doc.data().photos||[]):[];
-    renderPhotos();
-    history.pushState({page:'kenanganDetailPage'}, '', '#kenanganDetailPage');
-  }
-
-  function renderPhotos(){
-    const list=document.getElementById("photoList");
-    const pagination=document.getElementById("pagination");
-    list.innerHTML="";
-    pagination.innerHTML="";
-    const totalPages=Math.ceil(currentPhotos.length/perPage);
-    const start=(currentPage-1)*perPage;
-    const end=start+perPage;
-    const pagePhotos=currentPhotos.slice(start,end);
-    pagePhotos.forEach(url=>{
-      const div=document.createElement("div");
-      div.className="relative";
-      const img=document.createElement("img");
-      img.src=url;
-      img.className="rounded-lg shadow-lg cursor-pointer";
-      img.onclick=()=>openLightbox(url);
-      div.appendChild(img);
-      list.appendChild(div);
-    });
-    for(let i=1;i<=totalPages;i++){
-      const btn=document.createElement("button");
-      btn.textContent=i;
-      btn.className=`px-3 py-1 rounded ${i===currentPage?'bg-blue-500':'bg-gray-600 hover:bg-gray-700'}`;
-      btn.onclick=()=>{currentPage=i;renderPhotos();};
-      pagination.appendChild(btn);
-    }
-  }
-
-  function openLightbox(url){
-    const lb=document.getElementById("lightbox");
-    const img=document.getElementById("lightboxImg");
-    const dl=document.getElementById("downloadBtn");
-    img.src=url;
-    dl.href=url;
-    lb.classList.remove("hidden");
-  }
-
-  function closeLightbox(e){
-    if(!e || e.target.id==='lightbox' || e.target.id==='lightboxImg' || e.target.tagName==='BUTTON') {
-      document.getElementById("lightbox").classList.add("hidden");
-    }
-  }
-
-  async function addSubmenu(){
-    const name=prompt("Nama grup kenangan:");
-    if(!name)return;
-    await db.collection("kenangan").doc(name).set({photos:[]});
-    renderSubmenu();
-  }
-
-  async function addPhoto(){
-    const url=prompt("Masukkan URL foto:");
-    if(!url)return;
-    const doc=await db.collection("kenangan").doc(currentKenangan).get();
-    const photos=doc.exists?(doc.data().photos||[]):[];
-    photos.push(url);
-    await db.collection("kenangan").doc(currentKenangan).update({photos});
-    currentPhotos=photos;
-    renderPhotos();
-  }
-
-  async function deleteGrup(){
-    if(!confirm("Hapus grup ini?")) return;
-    await db.collection("kenangan").doc(currentKenangan).delete();
-    openPage('kenanganPage');
-  }
-
-  async function renderHarapan(){
-    const list=document.getElementById("harapanList");
-    list.innerHTML="";
-    const snapshot=await db.collection("harapan").get();
-    snapshot.forEach(doc=>{
-      const div=document.createElement("div");
-      div.className="flex justify-between items-center bg-gray-700 p-2 rounded";
-      div.textContent=doc.data().text;
-      const del=document.createElement("button");
-      del.textContent="X";
-      del.className="bg-red-500 px-2 py-1 rounded ml-2";
-      del.onclick=async()=>{await db.collection("harapan").doc(doc.id).delete();renderHarapan();};
-      div.appendChild(del);
-      list.appendChild(div);
-    });
-  }
-
+}
   async function addHarapan(){
-    const input=document.getElementById("harapanInput");
-    const text=input.value.trim();
-    if(!text) return;
-    await db.collection("harapan").add({text});
-    input.value="";
-    renderHarapan();
-  }
+  const input = document.getElementById("harapanInput");
+  const text = input.value.trim();
+  if(!text) return;
+  await db.collection("harapan").add({text});
+  input.value="";
+  currentHarapanPage = Math.ceil((allHarapan.length + 1)/harapanPerPage);
+  renderHarapan(currentHarapanPage);
+}
 </script>
 </body>
 </html>
