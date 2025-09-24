@@ -9,32 +9,14 @@
 <style>
 .thumbnail-img { width: 150px; height: 150px; object-fit: cover; border-radius: 0.5rem; }
 #lightboxImg { max-width: 90vw; max-height: 80vh; }
-#photoListWrapper {
-  display: flex;
-  justify-content: center; /* center horizontal */
-  align-items: center;     /* center vertical */
-  height: 100%;            /* wrapper penuh tinggi container */
-  padding: 1.5rem;         /* jarak dari tepi */
-}
-
-#photoList {
-  display: grid;
-  grid-template-columns: repeat(2, 150px);
-  grid-auto-rows: 150px;
-  gap: 3rem;             /* jarak antar foto */
-}
-
-.thumbnail-img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-}
+#photoListWrapper { display: flex; justify-content: center; align-items: center; height: 100%; padding: 1.5rem; }
+#photoList { display: grid; grid-template-columns: repeat(2, 150px); grid-auto-rows: 150px; gap: 3rem; }
 </style>
 </head>
-<body class="bg-cover bg-center min-h-screen text-white" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
+<body class="bg-cover bg-center min-h-screen text-white" 
+style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');">
 
-<!-- Login -->
+<!-- Login Page -->
 <div id="loginPage" class="flex items-center justify-center min-h-screen">
   <div class="bg-black bg-opacity-70 p-8 rounded-xl shadow-lg w-96">
     <h2 class="text-2xl font-bold mb-4 text-center">Login</h2>
@@ -45,15 +27,15 @@
   </div>
 </div>
 
-  <!-- Anniversary -->
+<!-- Anniversary Page -->
 <div id="annivPage" class="hidden flex flex-col items-center justify-center min-h-screen bg-black bg-opacity-70 text-white">
   <h2 class="text-2xl font-bold mb-4">Masukkan Tanggal Anniversary</h2>
   <input id="annivInput" type="date" class="px-4 py-2 rounded text-black mb-3">
   <button onclick="checkAnniv()" class="bg-green-500 hover:bg-green-600 px-6 py-2 rounded">Submit</button>
   <p id="annivError" class="text-red-400 mt-2 hidden">Tanggal salah! Coba lagi.</p>
 </div>
-  
-<!-- Menu -->
+
+<!-- Menu Page -->
 <div id="menuPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70">
   <h2 class="text-3xl font-bold mb-6">Menu Utama</h2>
   <div class="grid grid-cols-2 gap-6">
@@ -64,14 +46,14 @@
   </div>
 </div>
 
-<!-- Ucapan -->
+<!-- Ucapan Page -->
 <div id="ucapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
   <h2 class="text-2xl font-bold mb-6">🎉Selamat Ulang Tahun🎉</h2>
   <p class="text-lg max-w-md">Selamat ulang tahun, sayangku. Semoga kamu selalu merasa dicintai, dihargai, dan dimengerti. Ikhlaskan seluruh kekecewaan dan kesedihan mu di masa lalu, karena aku akan selalu bersama mu. Semoga kamu dilapangkan rezekinya, dijaga dari segala marabahaya, dan selalu dikelilingi teman teman yang peduli padamu.</p>
   <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
 </div>
 
-<!-- Kenangan -->
+<!-- Kenangan Page -->
 <div id="kenanganPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
   <div class="flex justify-between items-center p-4">
     <h2 class="text-2xl font-bold">Kenangan</h2>
@@ -81,44 +63,39 @@
   <button onclick="backToMenu()" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
 </div>
 
-<!-- Detail Kenangan -->
+<!-- Kenangan Detail Page -->
 <div id="kenanganDetailPage" class="hidden min-h-screen flex flex-col bg-black bg-opacity-70">
   <div class="flex justify-between items-center p-4">
     <h2 id="kenanganTitle" class="text-2xl font-bold"></h2>
     <div>
-      <button onclick="addPhoto()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">+ Tambah Foto</button>
+      <button onclick="addPhoto()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">+ Upload Foto</button>
+      <button onclick="addPhotoLink()" class="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded ml-2">+ Upload Link</button>
       <button onclick="deleteGrup()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded ml-2">Hapus Grup</button>
     </div>
   </div>
   <div id="photoListWrapper" class="flex-1 flex justify-center items-center overflow-y-auto">
-  <div id="photoList" class="grid grid-cols-2 gap-6"></div>
-</div>
+    <div id="photoList" class="grid grid-cols-2 gap-6"></div>
+  </div>
   <div id="pagination" class="flex justify-center gap-2 p-4"></div>
   <button onclick="backFromDetailToKenangan()" class="m-4 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded self-start">Kembali</button>
 </div>
 
-<!-- Visi -->
+<!-- Visi Page -->
 <div id="visiPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
   <h2 class="text-3xl font-bold mb-6">✨ Visi Kita ✨</h2>
   <p class="text-lg max-w-md">Aku ingin membangun hubungan yang tulus dan penuh percaya, di mana kita saling mendukung, menghargai, dan menghadirkan kehangatan satu sama lain. Hubungan ini bukan sekadar indah, tapi juga kuat dan berarti, membawa rasa nyaman dan bahagia bagi kita berdua.</p>
   <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
 </div>
 
-<!-- Harapan -->
+<!-- Harapan Page -->
 <div id="harapanPage" class="hidden min-h-screen flex flex-col items-center justify-center bg-black bg-opacity-70 text-center">
   <h2 class="text-3xl font-bold mb-6">💖 Harapan 💖</h2>
-  
-  <!-- List Harapan -->
   <div id="harapanList" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4"></div>
   <div id="harapanPagination" class="flex justify-center gap-2 mt-2"></div>
-  <!-- Input Harapan -->
   <div class="flex gap-2 mb-4 w-full max-w-md">
-    <input id="harapanInput" type="text" placeholder="Tambahkan harapan" 
-      class="flex-1 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-pink-500">
-    <button onclick="addHarapan()" 
-      class="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded-lg text-white font-bold">Tambah</button>
+    <input id="harapanInput" type="text" placeholder="Tambahkan harapan" class="flex-1 px-4 py-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-pink-500">
+    <button onclick="addHarapan()" class="bg-pink-500 hover:bg-pink-600 px-4 py-2 rounded-lg text-white font-bold">Tambah</button>
   </div>
-
   <button onclick="backToMenu()" class="mt-6 bg-gray-500 hover:bg-gray-600 px-6 py-2 rounded">Kembali</button>
 </div>
 
@@ -131,7 +108,10 @@
   </div>
 </div>
 
+<input type="file" id="fileInput" accept="image/*" class="hidden">
+
 <script>
+// ===== Firebase =====
 const firebaseConfig = {
   apiKey: "AIzaSyAy1IMv6ugNGA578sx0n87IlxLGzCcCkes",
   authDomain: "project-ae3dc.firebaseapp.com",
@@ -144,20 +124,26 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// ===== Cloudinary Config =====
+const cloudName = "dtpskj8gv";
+const apiKey = "312637785754871";
+const apiSecret = "7XUOzrewsBO3Qnzcdh_8OcTe-ZM";
+const uploadPreset = "Raynaldo";
+
+// ===== Global =====
 let currentKenangan = "";
 let currentPage = 1;
 const perPage = 4;
 let currentPhotos = [];
 let harapanPerPage = 10;
 let currentHarapanPage = 1;
-let allHarapan = []; // menampung semua harapan dari Firestore
+let allHarapan = [];
 
 // ===== Login =====
 function login() {
   const user = document.getElementById("username").value;
   const pass = document.getElementById("password").value;
   if(user==="raynaldo" && pass==="shafrina"){
-    // Tampilkan halaman anniversary
     document.getElementById("loginPage").classList.add("hidden");
     document.getElementById("annivPage").classList.remove("hidden");
   } else { 
@@ -165,16 +151,13 @@ function login() {
   }
 }
 
-  function checkAnniv(){
+function checkAnniv(){
   const input = document.getElementById("annivInput").value;
-  const target = "2025-08-23"; // format YYYY-MM-DD
+  const target = "2025-08-23";
   if(input === target){
-    // Simpan login dan tanggal untuk persistensi
-    const today = new Date().toISOString().split('T')[0];
     localStorage.setItem('loginUser', 'raynaldo');
-    localStorage.setItem('loginDate', today);
-    
-    // Masuk menu utama
+    localStorage.setItem('loginDate', new Date().toISOString().split('T')[0]);
+
     document.getElementById("annivPage").classList.add("hidden");
     document.getElementById("menuPage").classList.remove("hidden");
     renderHarapan();
@@ -183,19 +166,14 @@ function login() {
     document.getElementById("annivError").classList.remove("hidden");
   }
 }
-  
-// ===== Navigasi =====
-// Saat login sukses
-history.replaceState({page:'menuPage'}, '', '#menuPage');
 
-// Navigasi dari menu ke halaman lain
+// ===== Navigasi =====
 function openPage(page){
   document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
   document.getElementById(page).classList.remove("hidden");
   if(page==="kenanganPage") renderSubmenu();
   if(page==="harapanPage") renderHarapan();
 
-  // Hanya push state saat pindah dari menu
   if(history.state?.page === 'menuPage'){
     history.pushState({page:page}, '', '#'+page);
   }else{
@@ -203,31 +181,25 @@ function openPage(page){
   }
 }
 
-// Kembali dari detail ke list kenangan
 function backFromDetailToKenangan(){
   document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
   document.getElementById('kenanganPage').classList.remove("hidden");
-
-  // Ganti state, jangan push
   history.replaceState({page:'kenanganPage'}, '', '#kenanganPage');
 }
 
-// Kembali ke menu
 function backToMenu(){
   document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
   document.getElementById('menuPage').classList.remove("hidden");
-
-  // Ganti state
   history.replaceState({page:'menuPage'}, '', '#menuPage');
 }
-  
+
 window.addEventListener('popstate', e=>{
   const page = e.state?.page || 'menuPage';
   document.querySelectorAll("body > div").forEach(d=>d.classList.add("hidden"));
   document.getElementById(page).classList.remove("hidden");
 });
 
-// ===== Kenangan =====
+// ===== Kenangan Submenu =====
 async function renderSubmenu(){
   const container=document.getElementById("submenuList");
   container.innerHTML="";
@@ -246,10 +218,8 @@ async function openKenanganDetail(name){
   currentKenangan = name;
   currentPage = 1;
   currentPhotos = [];
-
   document.getElementById("photoList").replaceChildren();
   document.getElementById("pagination").replaceChildren();
-
   document.querySelectorAll("body > div").forEach(d => d.classList.add("hidden"));
   document.getElementById("kenanganDetailPage").classList.remove("hidden");
   document.getElementById("kenanganTitle").textContent = name;
@@ -257,139 +227,207 @@ async function openKenanganDetail(name){
   const doc = await db.collection("kenangan").doc(currentKenangan).get();
   currentPhotos = doc.exists ? (doc.data().photos || []) : [];
   renderPhotos();
-
-  // Gunakan pushState, bukan replaceState
   history.pushState({page:'kenanganDetailPage'}, '', '#kenanganDetailPage');
 }
 
 // ===== Render Photos =====
-function getThumbnail(url){ return url; } // Bisa ditambahkan thumbnail sesuai host
 function renderPhotos(){
-  const list=document.getElementById("photoList"); const pagination=document.getElementById("pagination");
-  list.innerHTML=""; pagination.innerHTML="";
+  const list=document.getElementById("photoList"); 
+  const pagination=document.getElementById("pagination");
+  list.innerHTML=""; 
+  pagination.innerHTML="";
   const totalPages=Math.ceil(currentPhotos.length/perPage);
-  const start=(currentPage-1)*perPage; const end=start+perPage; const pagePhotos=currentPhotos.slice(start,end);
-  pagePhotos.forEach((url,index)=>{
-    const div=document.createElement("div"); div.className="relative";
-    const img=document.createElement("img"); img.src=getThumbnail(url); img.dataset.full=url; img.loading="lazy"; img.className="thumbnail-img cursor-pointer";
+  const start=(currentPage-1)*perPage; 
+  const end=start+perPage; 
+  const pagePhotos=currentPhotos.slice(start,end);
+
+  pagePhotos.forEach((photo,index)=>{
+    const div=document.createElement("div"); 
+    div.className="relative";
+
+    const img=document.createElement("img"); 
+    img.src=photo.url || photo; 
+    img.dataset.full=photo.url || photo; 
+    img.loading="lazy"; 
+    img.className="thumbnail-img cursor-pointer";
     img.onclick=()=>openLightbox(img.dataset.full);
-    const delBtn=document.createElement("button"); delBtn.textContent="Hapus"; delBtn.className="absolute top-1 right-1 bg-red-500 text-white px-1 py-0.5 rounded text-sm";
+
+    const delBtn=document.createElement("button");
+    delBtn.textContent="X";
+    delBtn.className="absolute top-1 right-1 bg-red-500 px-2 py-1 text-white rounded";
     delBtn.onclick = async (e) => {
-  e.stopPropagation();
-  if(confirm("Hapus foto ini?")) {
-    const globalIndex = (currentPage-1) * perPage + index;
-    currentPhotos.splice(globalIndex, 1);
-    await db.collection("kenangan").doc(currentKenangan).update({photos: currentPhotos});
+      e.stopPropagation();
+      if(!confirm("Hapus foto ini?")) return;
+      const globalIndex = (currentPage-1)*perPage + index;
+      const photoItem = currentPhotos[globalIndex];
 
-    if(currentPhotos.length === 0){
-      // kalau sudah habis, kembali ke halaman daftar grup
-      currentKenangan = "";
-      currentPage = 1;
-      currentPhotos = [];
-      backFromDetailToKenangan(); 
-      return; // hentikan renderPhotos agar tidak menampilkan halaman kosong
-    }
+      // Hapus Cloudinary jika ada public_id
+      if(photoItem.public_id){
+        try{
+          const timestamp = Math.floor(Date.now()/1000);
+          const payload = `public_id=${photoItem.public_id}&timestamp=${timestamp}${apiSecret}`;
+          const sha1 = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(payload));
+          const signature = Array.from(new Uint8Array(sha1)).map(b=>b.toString(16).padStart(2,'0')).join('');
+          const formData = new FormData();
+          formData.append("public_id", photoItem.public_id);
+          formData.append("api_key", apiKey);
+          formData.append("timestamp", timestamp);
+          formData.append("signature", signature);
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, {method:"POST", body:formData});
+          const data = await res.json();
+          if(data.result !== "ok") throw new Error("Gagal hapus Cloudinary");
+        } catch(err){console.error(err); alert("Gagal hapus foto dari Cloudinary"); return;}
+      }
 
-    // jika masih ada foto, cek currentPage
-    const totalPages = Math.ceil(currentPhotos.length / perPage);
-    if(currentPage > totalPages) currentPage = totalPages;
-    renderPhotos();
-  }
-};
-      div.appendChild(img); div.appendChild(delBtn); list.appendChild(div);
+      currentPhotos.splice(globalIndex,1);
+      await db.collection("kenangan").doc(currentKenangan).update({photos: currentPhotos});
+      if(currentPhotos.length===0){backFromDetailToKenangan(); return;}
+      if(currentPage>Math.ceil(currentPhotos.length/perPage)) currentPage=Math.ceil(currentPhotos.length/perPage);
+      renderPhotos();
+    };
+
+    div.appendChild(img);
+    div.appendChild(delBtn);
+    list.appendChild(div);
   });
+
   for(let i=1;i<=totalPages;i++){
-    const btn=document.createElement("button"); btn.textContent=i; btn.className=`px-3 py-1 rounded ${i===currentPage?'bg-blue-500':'bg-gray-600 hover:bg-gray-700'}`; btn.onclick=()=>{currentPage=i; renderPhotos();}; pagination.appendChild(btn);
+    const btn=document.createElement("button");
+    btn.textContent=i;
+    btn.className=`px-3 py-1 rounded ${i===currentPage?'bg-blue-500':'bg-gray-600 hover:bg-gray-700'}`;
+    btn.onclick=()=>{currentPage=i; renderPhotos();};
+    pagination.appendChild(btn);
   }
 }
 
 // ===== Lightbox =====
-function openLightbox(url){ const lb=document.getElementById("lightbox"); const img=document.getElementById("lightboxImg"); const dl=document.getElementById("downloadBtn"); img.src=url; dl.href=url; lb.classList.remove("hidden"); }
-function closeLightbox(e){ if(!e || e.target.id==='lightbox' || e.target.tagName==='BUTTON') document.getElementById("lightbox").classList.add("hidden"); }
+function openLightbox(url){
+  const lb=document.getElementById("lightbox");
+  const img=document.getElementById("lightboxImg");
+  const dl=document.getElementById("downloadBtn");
+  img.src=url; dl.href=url;
+  lb.classList.remove("hidden");
+}
+function closeLightbox(e){
+  if(!e || e.target.id==='lightbox' || e.target.tagName==='BUTTON') document.getElementById("lightbox").classList.add("hidden");
+}
 
 // ===== Tambah / Hapus Grup & Foto =====
 async function addSubmenu(){
-  const name=prompt("Nama grup kenangan:"); if(!name)return;
+  const name=prompt("Nama grup kenangan:"); 
+  if(!name) return;
   const doc=await db.collection("kenangan").doc(name).get();
-  if(doc.exists){ alert("Nama grup sudah ada! Gunakan nama lain."); return; }
-  await db.collection("kenangan").doc(name).set({photos:[]}); renderSubmenu();
+  if(doc.exists){ alert("Nama grup sudah ada!"); return;}
+  await db.collection("kenangan").doc(name).set({photos:[]});
+  renderSubmenu();
 }
-async function addPhoto(){ const url=prompt("Masukkan URL foto:"); if(!url)return; const doc=await db.collection("kenangan").doc(currentKenangan).get(); const photos=doc.exists?(doc.data().photos||[]):[]; photos.push(url); await db.collection("kenangan").doc(currentKenangan).update({photos}); currentPhotos=photos; renderPhotos(); }
-async function deleteGrup(){ if(!confirm("Hapus grup ini?")) return; await db.collection("kenangan").doc(currentKenangan).delete(); backToMenu(); }
+
+function addPhoto(){
+  document.getElementById("fileInput").click();
+}
+
+document.getElementById("fileInput").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
+  try{
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {method:"POST", body:formData});
+    const data=await res.json();
+    if(data.secure_url){
+      const doc = await db.collection("kenangan").doc(currentKenangan).get();
+      const photos = doc.exists ? (doc.data().photos || []) : [];
+      photos.push({url: data.secure_url, public_id: data.public_id});
+      await db.collection("kenangan").doc(currentKenangan).update({photos});
+      currentPhotos = photos;
+      renderPhotos();
+    } else alert("Upload gagal!");
+  }catch(err){console.error(err); alert("Upload gagal!");}
+});
+
+// Upload Link
+async function addPhotoLink(){
+  const link = prompt("Masukkan URL foto:");
+  if(!link) return;
+  const doc = await db.collection("kenangan").doc(currentKenangan).get();
+  const photos = doc.exists ? (doc.data().photos || []) : [];
+  photos.push(link);
+  await db.collection("kenangan").doc(currentKenangan).update({photos});
+  currentPhotos = photos;
+  renderPhotos();
+}
+
+// Hapus Grup
+async function deleteGrup(){
+  if(!confirm("Hapus grup ini?")) return;
+  await db.collection("kenangan").doc(currentKenangan).delete();
+  backToMenu();
+}
 
 // ===== Harapan =====
-async function renderHarapan(page=1) {
-  const list = document.getElementById("harapanList");
-  list.innerHTML = "";
-  const pagination = document.getElementById("harapanPagination");
+async function renderHarapan(page=1){
+  const list=document.getElementById("harapanList");
+  list.innerHTML="";
+  const pagination=document.getElementById("harapanPagination");
 
-  // Fetch semua harapan
   const snapshot = await db.collection("harapan").get();
-  allHarapan = snapshot.docs.map(doc => ({id: doc.id, text: doc.data().text}));
+  allHarapan = snapshot.docs.map(doc=>({id:doc.id, text:doc.data().text}));
+  const totalPages = Math.ceil(allHarapan.length/harapanPerPage);
+  if(totalPages>0 && page>totalPages) page=totalPages;
+  currentHarapanPage=page;
 
-  const totalPages = Math.ceil(allHarapan.length / harapanPerPage);
-  
-  // Jika halaman sekarang > totalPages, pindah ke halaman terakhir
-  if(totalPages > 0 && page > totalPages) page = totalPages;
-  currentHarapanPage = page;
+  const start=(page-1)*harapanPerPage;
+  const end=start+harapanPerPage;
+  const pageHarapan = allHarapan.slice(start,end);
 
-  const start = (page - 1) * harapanPerPage;
-  const end = start + harapanPerPage;
-  const pageHarapan = allHarapan.slice(start, end);
+  pageHarapan.forEach(h=>{
+    const div=document.createElement("div");
+    div.className="flex justify-between items-center bg-pink-600 bg-opacity-70 hover:bg-pink-700 transition p-3 rounded-lg shadow-md";
 
-  // Render harapan
-  pageHarapan.forEach(h => {
-    const div = document.createElement("div");
-    div.className = "flex justify-between items-center bg-pink-600 bg-opacity-70 hover:bg-pink-700 transition p-3 rounded-lg shadow-md";
+    const textSpan=document.createElement("span");
+    textSpan.textContent=h.text; textSpan.className="text-white font-medium";
 
-    const textSpan = document.createElement("span");
-    textSpan.textContent = h.text;
-    textSpan.className = "text-white font-medium";
-
-    const del = document.createElement("button");
-    del.textContent = "X";
-    del.className = "bg-red-500 hover:bg-red-600 px-2 py-1 rounded ml-2 text-white";
-    del.onclick = async () => {
-      if(confirm("Yakin ingin menghapus harapan ini?")){
-        await db.collection("harapan").doc(h.id).delete();
-
-        // refresh semua data
-        const remaining = allHarapan.length - 1; // karena satu akan dihapus
-        const newTotalPages = Math.ceil(remaining / harapanPerPage);
-
-        // jika halaman sekarang kosong, pindah ke halaman sebelumnya jika ada
-        if(remaining > 0 && (currentHarapanPage > newTotalPages)) {
-          currentHarapanPage = newTotalPages;
-        }
-
-        renderHarapan(currentHarapanPage);
-      }
+    const del=document.createElement("button");
+    del.textContent="X"; del.className="bg-red-500 hover:bg-red-600 px-2 py-1 rounded ml-2 text-white";
+    del.onclick=async ()=>{
+      if(!confirm("Yakin ingin menghapus harapan ini?")) return;
+      await db.collection("harapan").doc(h.id).delete();
+      renderHarapan(currentHarapanPage);
     };
 
-    div.appendChild(textSpan);
-    div.appendChild(del);
-    list.appendChild(div);
+    div.appendChild(textSpan); div.appendChild(del); list.appendChild(div);
   });
 
-  // Render pagination
-  pagination.innerHTML = "";
-  for(let i = 1; i <= totalPages; i++){
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    btn.className = `px-3 py-1 rounded ${i===currentHarapanPage ? 'bg-blue-500' : 'bg-gray-600 hover:bg-gray-700'}`;
-    btn.onclick = () => { currentHarapanPage = i; renderHarapan(i); };
+  pagination.innerHTML="";
+  for(let i=1;i<=totalPages;i++){
+    const btn=document.createElement("button");
+    btn.textContent=i; btn.className=`px-3 py-1 rounded ${i===currentHarapanPage?'bg-blue-500':'bg-gray-600 hover:bg-gray-700'}`;
+    btn.onclick=()=>{ currentHarapanPage=i; renderHarapan(i); };
     pagination.appendChild(btn);
   }
 }
-  async function addHarapan(){
-  const input = document.getElementById("harapanInput");
-  const text = input.value.trim();
+
+async function addHarapan(){
+  const input=document.getElementById("harapanInput");
+  const text=input.value.trim();
   if(!text) return;
   await db.collection("harapan").add({text});
   input.value="";
-  currentHarapanPage = Math.ceil((allHarapan.length + 1)/harapanPerPage);
-  renderHarapan(currentHarapanPage);
+  renderHarapan();
 }
+
+// ===== Visi =====
+// Visi bersifat statis, sudah ada di HTML, tidak perlu JS tambahan kecuali ingin diambil dari Firestore
+async function renderVisi(){
+  const doc = await db.collection("visi").doc("main").get();
+  if(doc.exists){
+    document.querySelector("#visiPage p").textContent = doc.data().text;
+  }
+}
+
+// Panggil sekali saat load untuk menampilkan visi jika disimpan di Firestore
+renderVisi();
 </script>
 </body>
 </html>
