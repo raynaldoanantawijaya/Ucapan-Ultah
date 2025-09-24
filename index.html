@@ -242,54 +242,60 @@ function renderPhotos(){
   const pagePhotos=currentPhotos.slice(start,end);
 
   pagePhotos.forEach((photo,index)=>{
-    const div=document.createElement("div"); 
-    div.className="relative";
+  const div=document.createElement("div"); 
+  div.className="relative";
 
-    const img=document.createElement("img"); 
-    img.src=photo.url || photo; 
-    img.dataset.full=photo.url || photo; 
-    img.loading="lazy"; 
-    img.className="thumbnail-img cursor-pointer";
-    img.onclick=()=>openLightbox(img.dataset.full);
+  const img=document.createElement("img"); 
+  // Jika photo adalah objek Cloudinary, buat thumbnail URL
+  let thumbUrl = photo.url || photo; // default link asli
+  if(photo.public_id){
+    thumbUrl = `https://res.cloudinary.com/${cloudName}/image/upload/w_150,h_150,c_fill,q_auto/${photo.public_id}.jpg`;
+  }
 
-    const delBtn=document.createElement("button");
-    delBtn.textContent="X";
-    delBtn.className="absolute top-1 right-1 bg-red-500 px-2 py-1 text-white rounded";
-    delBtn.onclick = async (e) => {
-      e.stopPropagation();
-      if(!confirm("Hapus foto ini?")) return;
-      const globalIndex = (currentPage-1)*perPage + index;
-      const photoItem = currentPhotos[globalIndex];
+  img.src = thumbUrl; 
+  img.dataset.full = photo.url || photo; // tetap URL asli
+  img.loading="lazy"; 
+  img.className="thumbnail-img cursor-pointer";
+  img.onclick=()=>openLightbox(img.dataset.full);
 
-      // Hapus Cloudinary jika ada public_id
-      if(photoItem.public_id){
-        try{
-          const timestamp = Math.floor(Date.now()/1000);
-          const payload = `public_id=${photoItem.public_id}&timestamp=${timestamp}${apiSecret}`;
-          const sha1 = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(payload));
-          const signature = Array.from(new Uint8Array(sha1)).map(b=>b.toString(16).padStart(2,'0')).join('');
-          const formData = new FormData();
-          formData.append("public_id", photoItem.public_id);
-          formData.append("api_key", apiKey);
-          formData.append("timestamp", timestamp);
-          formData.append("signature", signature);
-          const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, {method:"POST", body:formData});
-          const data = await res.json();
-          if(data.result !== "ok") throw new Error("Gagal hapus Cloudinary");
-        } catch(err){console.error(err); alert("Gagal hapus foto dari Cloudinary"); return;}
-      }
+  const delBtn=document.createElement("button");
+  delBtn.textContent="X";
+  delBtn.className="absolute top-1 right-1 bg-red-500 px-2 py-1 text-white rounded";
+  delBtn.onclick = async (e) => {
+    e.stopPropagation();
+    if(!confirm("Hapus foto ini?")) return;
+    const globalIndex = (currentPage-1)*perPage + index;
+    const photoItem = currentPhotos[globalIndex];
 
-      currentPhotos.splice(globalIndex,1);
-      await db.collection("kenangan").doc(currentKenangan).update({photos: currentPhotos});
-      if(currentPhotos.length===0){backFromDetailToKenangan(); return;}
-      if(currentPage>Math.ceil(currentPhotos.length/perPage)) currentPage=Math.ceil(currentPhotos.length/perPage);
-      renderPhotos();
-    };
+    // Hapus Cloudinary jika ada public_id
+    if(photoItem.public_id){
+      try{
+        const timestamp = Math.floor(Date.now()/1000);
+        const payload = `public_id=${photoItem.public_id}&timestamp=${timestamp}${apiSecret}`;
+        const sha1 = await crypto.subtle.digest('SHA-1', new TextEncoder().encode(payload));
+        const signature = Array.from(new Uint8Array(sha1)).map(b=>b.toString(16).padStart(2,'0')).join('');
+        const formData = new FormData();
+        formData.append("public_id", photoItem.public_id);
+        formData.append("api_key", apiKey);
+        formData.append("timestamp", timestamp);
+        formData.append("signature", signature);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, {method:"POST", body:formData});
+        const data = await res.json();
+        if(data.result !== "ok") throw new Error("Gagal hapus Cloudinary");
+      } catch(err){console.error(err); alert("Gagal hapus foto dari Cloudinary"); return;}
+    }
 
-    div.appendChild(img);
-    div.appendChild(delBtn);
-    list.appendChild(div);
-  });
+    currentPhotos.splice(globalIndex,1);
+    await db.collection("kenangan").doc(currentKenangan).update({photos: currentPhotos});
+    if(currentPhotos.length===0){backFromDetailToKenangan(); return;}
+    if(currentPage>Math.ceil(currentPhotos.length/perPage)) currentPage=Math.ceil(currentPhotos.length/perPage);
+    renderPhotos();
+  };
+
+  div.appendChild(img);
+  div.appendChild(delBtn);
+  list.appendChild(div);
+});
 
   for(let i=1;i<=totalPages;i++){
     const btn=document.createElement("button");
